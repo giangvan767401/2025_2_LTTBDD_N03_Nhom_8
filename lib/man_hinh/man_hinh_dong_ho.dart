@@ -10,6 +10,7 @@ class ManHinhDongHo extends StatefulWidget {
 class _ManHinhDongHoState extends State<ManHinhDongHo> {
   int giayConLai = 25 * 60;
   bool dangChay = false;
+  bool laPhienTapTrung = true;
 
   String layChuoiThoiGian() {
     int phut = giayConLai ~/ 60;
@@ -17,10 +18,24 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
     return '${phut.toString().padLeft(2, '0')}:${giay.toString().padLeft(2, '0')}';
   }
 
+  Color layMauNen() {
+    if (dangChay) {
+      return laPhienTapTrung ? Colors.red[800]! : Colors.green[800]!;
+    }
+    return Colors.blueGrey[900]!;
+  }
+
+  String layTrangThai() {
+    if (dangChay) {
+      return laPhienTapTrung ? 'Đang tập trung' : 'Đang nghỉ ngơi';
+    }
+    return 'Sẵn sàng bắt đầu';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[900],
+      backgroundColor: layMauNen(),
       appBar: AppBar(
         title: const Text('Đồng hồ Pomodoro'),
         centerTitle: true,
@@ -32,18 +47,38 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                layChuoiThoiGian(),
-                style: const TextStyle(
-                  fontSize: 72,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+              SizedBox(
+                width: 280,
+                height: 280,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      value: 0.0,
+                      strokeWidth: 24,
+                      backgroundColor: Colors.white.withOpacity(0.2),
+                      color: Colors.white,
+                    ),
+                    Text(
+                      layChuoiThoiGian(),
+                      style: const TextStyle(
+                        fontSize: 72,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        letterSpacing: 4,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Sẵn sàng bắt đầu',
-                style: TextStyle(color: Colors.white70, fontSize: 24),
+              const SizedBox(height: 40),
+              Text(
+                layTrangThai(),
+                style: TextStyle(
+                  fontSize: 28,
+                  color: Colors.white.withOpacity(0.9),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
