@@ -151,6 +151,27 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
           ),
         ),
       ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black.withOpacity(0.3),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Đồng hồ'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            label: 'Thống kê',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info),
+            label: 'Thông tin nhóm',
+          ),
+        ],
+        currentIndex: 0,
+        onTap: (index) {
+          // Sau này xử lý chuyển màn
+        },
+      ),
     );
   }
 }
