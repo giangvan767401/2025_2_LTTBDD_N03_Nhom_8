@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart'; // Thêm import cho âm thanh
+import 'package:vibration/vibration.dart'; // Thêm import cho rung
 
 class ManHinhDongHo extends StatefulWidget {
   const ManHinhDongHo({super.key});
@@ -10,10 +12,12 @@ class ManHinhDongHo extends StatefulWidget {
 
 class _ManHinhDongHoState extends State<ManHinhDongHo> {
   int giayConLai = 25 * 60; // Ban đầu 25 phút
-  int tongGiayBanDau = 25 * 60; // Để tính tiến độ vòng tròn
+  int tongGiayBanDau = 25 * 60;
   bool dangChay = false;
   bool laPhienTapTrung = true;
   Timer? _timer;
+
+  final AudioPlayer _audioPlayer = AudioPlayer(); // Khởi tạo player âm thanh
 
   final TextEditingController _gioController = TextEditingController(
     text: '00',
@@ -28,6 +32,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
   @override
   void dispose() {
     _timer?.cancel();
+    _audioPlayer.dispose();
     _gioController.dispose();
     _phutController.dispose();
     _giayController.dispose();
@@ -69,7 +74,6 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
     });
 
     if (dangChay) {
-      // Lưu thời gian ban đầu để tính tiến độ vòng tròn
       tongGiayBanDau = giayConLai;
 
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -79,16 +83,36 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
           } else {
             timer.cancel();
             dangChay = false;
-            // Chuyển trạng thái (tập trung → nghỉ, nghỉ → tập trung)
             laPhienTapTrung = !laPhienTapTrung;
-            // Có thể reset về 25 phút hoặc 5 phút tùy ý
-            // Ví dụ: giayConLai = laPhienTapTrung ? 25 * 60 : 5 * 60;
-            // Hiện tại để 00:00:00 khi hết
+
+            // Phát âm thanh + rung khi hết giờ
+            _phatAmThanhVaRung();
+
+            // Tùy chọn: tự động set thời gian mới (bỏ comment nếu muốn)
+            // giayConLai = laPhienTapTrung ? 25 * 60 : 5 * 60;
+            // tongGiayBanDau = giayConLai;
           }
         });
       });
     } else {
       _timer?.cancel();
+    }
+  }
+
+  Future<void> _phatAmThanhVaRung() async {
+    try {
+      // Phát âm thanh từ assets (đường dẫn phải khớp với pubspec.yaml)
+      await _audioPlayer.play(AssetSource('sounds/notification.mp3'));
+
+      // Rung điện thoại nếu thiết bị hỗ trợ
+      if (await Vibration.hasVibrator() ?? false) {
+        Vibration.vibrate(
+          pattern: [0, 500, 200, 500], // rung 500ms - nghỉ 200ms - rung 500ms
+          intensities: [128, 0, 128], // độ mạnh rung (0-255)
+        );
+      }
+    } catch (e) {
+      debugPrint('Lỗi phát âm thanh hoặc rung: $e');
     }
   }
 
@@ -179,11 +203,11 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
                 setState(() {
                   giayConLai = tongGiayMoi > 0 ? tongGiayMoi : 60;
-                  dangChay = false; // Dừng timer khi thay đổi thời gian
-                  tongGiayBanDau = giayConLai; // Cập nhật tiến độ mới
+                  dangChay = false;
+                  tongGiayBanDau = giayConLai;
                 });
 
-                _timer?.cancel(); // Đảm bảo dừng timer cũ
+                _timer?.cancel();
                 Navigator.pop(context);
               },
               child: const Text('Xác nhận'),
@@ -295,7 +319,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: batDauHoacTamDung, // ← Gọi hàm mới
+                      onPressed: batDauHoacTamDung,
                       icon: Icon(
                         dangChay
                             ? Icons.pause_rounded
