@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 class ManHinhDongHo extends StatefulWidget {
@@ -8,10 +9,11 @@ class ManHinhDongHo extends StatefulWidget {
 }
 
 class _ManHinhDongHoState extends State<ManHinhDongHo> {
-  int giayConLai =
-      25 * 60; // Ban đầu khi mở app vẫn là 25 phút (chuẩn Pomodoro)
+  int giayConLai = 25 * 60; // Ban đầu 25 phút
+  int tongGiayBanDau = 25 * 60; // Để tính tiến độ vòng tròn
   bool dangChay = false;
   bool laPhienTapTrung = true;
+  Timer? _timer;
 
   final TextEditingController _gioController = TextEditingController(
     text: '00',
@@ -23,12 +25,26 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
     text: '00',
   );
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _gioController.dispose();
+    _phutController.dispose();
+    _giayController.dispose();
+    super.dispose();
+  }
+
   String layChuoiThoiGian() {
     int tongGiay = giayConLai;
     int gio = tongGiay ~/ 3600;
     int phut = (tongGiay % 3600) ~/ 60;
     int giay = tongGiay % 60;
     return '${gio.toString().padLeft(2, '0')}:${phut.toString().padLeft(2, '0')}:${giay.toString().padLeft(2, '0')}';
+  }
+
+  double layGiaTriTienDo() {
+    if (tongGiayBanDau == 0) return 0.0;
+    return 1.0 - (giayConLai / tongGiayBanDau);
   }
 
   List<Color> layMauGradient() {
@@ -45,6 +61,35 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
       return laPhienTapTrung ? 'Đang tập trung' : 'Đang nghỉ ngơi';
     }
     return 'Sẵn sàng bắt đầu';
+  }
+
+  void batDauHoacTamDung() {
+    setState(() {
+      dangChay = !dangChay;
+    });
+
+    if (dangChay) {
+      // Lưu thời gian ban đầu để tính tiến độ vòng tròn
+      tongGiayBanDau = giayConLai;
+
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          if (giayConLai > 0) {
+            giayConLai--;
+          } else {
+            timer.cancel();
+            dangChay = false;
+            // Chuyển trạng thái (tập trung → nghỉ, nghỉ → tập trung)
+            laPhienTapTrung = !laPhienTapTrung;
+            // Có thể reset về 25 phút hoặc 5 phút tùy ý
+            // Ví dụ: giayConLai = laPhienTapTrung ? 25 * 60 : 5 * 60;
+            // Hiện tại để 00:00:00 khi hết
+          }
+        });
+      });
+    } else {
+      _timer?.cancel();
+    }
   }
 
   void _moHopThoaiNhapThoiGian() {
@@ -134,9 +179,11 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
                 setState(() {
                   giayConLai = tongGiayMoi > 0 ? tongGiayMoi : 60;
-                  dangChay = false;
+                  dangChay = false; // Dừng timer khi thay đổi thời gian
+                  tongGiayBanDau = giayConLai; // Cập nhật tiến độ mới
                 });
 
+                _timer?.cancel(); // Đảm bảo dừng timer cũ
                 Navigator.pop(context);
               },
               child: const Text('Xác nhận'),
@@ -200,7 +247,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                           ),
                         ),
                         CircularProgressIndicator(
-                          value: 0.0,
+                          value: layGiaTriTienDo(),
                           strokeWidth: 28,
                           backgroundColor: Colors.white.withOpacity(0.18),
                           color: Colors.white,
@@ -248,11 +295,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          dangChay = !dangChay;
-                        });
-                      },
+                      onPressed: batDauHoacTamDung, // ← Gọi hàm mới
                       icon: Icon(
                         dangChay
                             ? Icons.pause_rounded
@@ -288,10 +331,12 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                     OutlinedButton.icon(
                       onPressed: () {
                         setState(() {
-                          giayConLai = 0; // ← Đặt lại về 00:00:00
+                          giayConLai = 0;
                           dangChay = false;
                           laPhienTapTrung = true;
+                          tongGiayBanDau = 0;
                         });
+                        _timer?.cancel();
                       },
                       icon: const Icon(Icons.refresh_rounded, size: 36),
                       label: const Text(
@@ -341,13 +386,5 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
         onTap: (index) {},
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _gioController.dispose();
-    _phutController.dispose();
-    _giayController.dispose();
-    super.dispose();
   }
 }
