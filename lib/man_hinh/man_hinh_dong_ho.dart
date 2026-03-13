@@ -8,9 +8,20 @@ class ManHinhDongHo extends StatefulWidget {
 }
 
 class _ManHinhDongHoState extends State<ManHinhDongHo> {
-  int giayConLai = 25 * 60; // 1500 giây = 25 phút
+  int giayConLai =
+      25 * 60; // Ban đầu khi mở app vẫn là 25 phút (chuẩn Pomodoro)
   bool dangChay = false;
   bool laPhienTapTrung = true;
+
+  final TextEditingController _gioController = TextEditingController(
+    text: '00',
+  );
+  final TextEditingController _phutController = TextEditingController(
+    text: '25',
+  );
+  final TextEditingController _giayController = TextEditingController(
+    text: '00',
+  );
 
   String layChuoiThoiGian() {
     int tongGiay = giayConLai;
@@ -36,6 +47,106 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
     return 'Sẵn sàng bắt đầu';
   }
 
+  void _moHopThoaiNhapThoiGian() {
+    int gioHienTai = giayConLai ~/ 3600;
+    int phutHienTai = (giayConLai % 3600) ~/ 60;
+    int giayHienTai = giayConLai % 60;
+
+    _gioController.text = gioHienTai.toString().padLeft(2, '0');
+    _phutController.text = phutHienTai.toString().padLeft(2, '0');
+    _giayController.text = giayHienTai.toString().padLeft(2, '0');
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Nhập thời gian mong muốn'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 60,
+                    child: TextField(
+                      controller: _gioController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      maxLength: 2,
+                      decoration: const InputDecoration(
+                        hintText: 'Giờ',
+                        counterText: '',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  const Text(':', style: TextStyle(fontSize: 24)),
+                  SizedBox(
+                    width: 60,
+                    child: TextField(
+                      controller: _phutController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      maxLength: 2,
+                      decoration: const InputDecoration(
+                        hintText: 'Phút',
+                        counterText: '',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  const Text(':', style: TextStyle(fontSize: 24)),
+                  SizedBox(
+                    width: 60,
+                    child: TextField(
+                      controller: _giayController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      maxLength: 2,
+                      decoration: const InputDecoration(
+                        hintText: 'Giây',
+                        counterText: '',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Hủy'),
+            ),
+            TextButton(
+              onPressed: () {
+                int gio = int.tryParse(_gioController.text) ?? 0;
+                int phut = int.tryParse(_phutController.text) ?? 0;
+                int giay = int.tryParse(_giayController.text) ?? 0;
+
+                if (gio > 9) gio = 9;
+                if (phut > 59) phut = 59;
+                if (giay > 59) giay = 59;
+
+                int tongGiayMoi = gio * 3600 + phut * 60 + giay;
+
+                setState(() {
+                  giayConLai = tongGiayMoi > 0 ? tongGiayMoi : 60;
+                  dangChay = false;
+                });
+
+                Navigator.pop(context);
+              },
+              child: const Text('Xác nhận'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +163,6 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Icon trạng thái nhỏ
                 Icon(
                   laPhienTapTrung
                       ? Icons.center_focus_strong_rounded
@@ -62,62 +172,62 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                 ),
                 const SizedBox(height: 16),
 
-                // Vòng tròn thời gian với bóng nhẹ
-                SizedBox(
-                  width: 320,
-                  height: 320,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Bóng nền nhẹ cho chiều sâu
-                      Container(
-                        width: 300,
-                        height: 300,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.35),
-                              blurRadius: 25,
-                              offset: const Offset(8, 8),
-                            ),
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.12),
-                              blurRadius: 25,
-                              offset: const Offset(-8, -8),
-                            ),
-                          ],
+                GestureDetector(
+                  onTap: _moHopThoaiNhapThoiGian,
+                  child: SizedBox(
+                    width: 320,
+                    height: 320,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: 300,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.35),
+                                blurRadius: 25,
+                                offset: const Offset(8, 8),
+                              ),
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.12),
+                                blurRadius: 25,
+                                offset: const Offset(-8, -8),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      CircularProgressIndicator(
-                        value: 0.0,
-                        strokeWidth: 28,
-                        backgroundColor: Colors.white.withOpacity(0.18),
-                        color: Colors.white,
-                      ),
-                      Text(
-                        layChuoiThoiGian(),
-                        style: const TextStyle(
-                          fontSize: 64,
-                          fontWeight: FontWeight.w900,
+                        CircularProgressIndicator(
+                          value: 0.0,
+                          strokeWidth: 28,
+                          backgroundColor: Colors.white.withOpacity(0.18),
                           color: Colors.white,
-                          letterSpacing: 3,
-                          shadows: [
-                            Shadow(
-                              blurRadius: 12,
-                              color: Colors.black54,
-                              offset: Offset(3, 3),
-                            ),
-                          ],
                         ),
-                      ),
-                    ],
+                        Text(
+                          layChuoiThoiGian(),
+                          style: const TextStyle(
+                            fontSize: 64,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            letterSpacing: 3,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 12,
+                                color: Colors.black54,
+                                offset: Offset(3, 3),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
 
                 const SizedBox(height: 48),
 
-                // Trạng thái với fade nhẹ
                 AnimatedOpacity(
                   opacity: 1.0,
                   duration: const Duration(milliseconds: 600),
@@ -134,7 +244,6 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
                 const SizedBox(height: 80),
 
-                // Nút điều khiển to hơn, bóng theo màu
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -179,7 +288,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                     OutlinedButton.icon(
                       onPressed: () {
                         setState(() {
-                          giayConLai = 25 * 60;
+                          giayConLai = 0; // ← Đặt lại về 00:00:00
                           dangChay = false;
                           laPhienTapTrung = true;
                         });
@@ -211,7 +320,6 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
           ),
         ),
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black.withOpacity(0.4),
         selectedItemColor: Colors.white,
@@ -230,10 +338,16 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
           ),
         ],
         currentIndex: 0,
-        onTap: (index) {
-          // Sau này xử lý chuyển màn
-        },
+        onTap: (index) {},
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _gioController.dispose();
+    _phutController.dispose();
+    _giayController.dispose();
+    super.dispose();
   }
 }
