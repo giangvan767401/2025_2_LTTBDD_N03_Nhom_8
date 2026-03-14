@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:vibration/vibration.dart';
 import '../models/phien_pomodoro.dart'; 
+import 'man_hinh_thong_ke.dart';
 
 class ManHinhDongHo extends StatefulWidget {
   const ManHinhDongHo({super.key});
@@ -372,14 +373,22 @@ const SizedBox(width: 32),
         unselectedItemColor: Colors.white70,
         selectedFontSize: 14,
         unselectedFontSize: 12,
+        currentIndex: 0,
+        onTap: (index) {
+          if (index == 1) {
+           Navigator.push(
+            context,
+            MaterialPageRoute(
+               builder: (context) => ManHinhThongKe(danhSachPhien: danhSachPhien),
+              ),
+            );
+         }
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Đồng hồ'),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Thống kê'),
           BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Thông tin nhóm'),
         ],
-        currentIndex: 0,
-        onTap: (index) {
-        },
       ),
     );
   }
