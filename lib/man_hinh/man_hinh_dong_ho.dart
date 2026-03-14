@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart'; // Thêm import cho âm thanh
 import 'package:vibration/vibration.dart'; // Thêm import cho rung
+import '../models/phien_pomodoro.dart';
 
 class ManHinhDongHo extends StatefulWidget {
   const ManHinhDongHo({super.key});
@@ -16,6 +17,8 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
   bool dangChay = false;
   bool laPhienTapTrung = true;
   Timer? _timer;
+
+  List<PhienPomodoro> danhSachPhien = [];
 
   final AudioPlayer _audioPlayer = AudioPlayer(); // Khởi tạo player âm thanh
 
