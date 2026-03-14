@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart'; // Thêm import cho âm thanh
-import 'package:vibration/vibration.dart'; // Thêm import cho rung
-import '../models/phien_pomodoro.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:vibration/vibration.dart';
+import '../models/phien_pomodoro.dart'; 
 
 class ManHinhDongHo extends StatefulWidget {
   const ManHinhDongHo({super.key});
@@ -12,7 +12,7 @@ class ManHinhDongHo extends StatefulWidget {
 }
 
 class _ManHinhDongHoState extends State<ManHinhDongHo> {
-  int giayConLai = 25 * 60; // Ban đầu 25 phút
+  int giayConLai = 25 * 60; 
   int tongGiayBanDau = 25 * 60;
   bool dangChay = false;
   bool laPhienTapTrung = true;
@@ -20,17 +20,11 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
   List<PhienPomodoro> danhSachPhien = [];
 
-  final AudioPlayer _audioPlayer = AudioPlayer(); // Khởi tạo player âm thanh
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
-  final TextEditingController _gioController = TextEditingController(
-    text: '00',
-  );
-  final TextEditingController _phutController = TextEditingController(
-    text: '25',
-  );
-  final TextEditingController _giayController = TextEditingController(
-    text: '00',
-  );
+  final TextEditingController _gioController = TextEditingController(text: '00');
+  final TextEditingController _phutController = TextEditingController(text: '25');
+  final TextEditingController _giayController = TextEditingController(text: '00');
 
   @override
   void dispose() {
@@ -86,14 +80,18 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
           } else {
             timer.cancel();
             dangChay = false;
+
+            if (laPhienTapTrung) {
+              danhSachPhien.add(PhienPomodoro(
+                thoiGianHoanThanh: DateTime.now(),
+                thoiLuongPhut: tongGiayBanDau ~/ 60, 
+              ));
+            }
+
             laPhienTapTrung = !laPhienTapTrung;
 
-            // Phát âm thanh + rung khi hết giờ
             _phatAmThanhVaRung();
 
-            // Tùy chọn: tự động set thời gian mới (bỏ comment nếu muốn)
-            // giayConLai = laPhienTapTrung ? 25 * 60 : 5 * 60;
-            // tongGiayBanDau = giayConLai;
           }
         });
       });
@@ -104,14 +102,12 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
   Future<void> _phatAmThanhVaRung() async {
     try {
-      // Phát âm thanh từ assets (đường dẫn phải khớp với pubspec.yaml)
       await _audioPlayer.play(AssetSource('sounds/notification.mp3'));
 
-      // Rung điện thoại nếu thiết bị hỗ trợ
       if (await Vibration.hasVibrator() ?? false) {
         Vibration.vibrate(
-          pattern: [0, 500, 200, 500], // rung 500ms - nghỉ 200ms - rung 500ms
-          intensities: [128, 0, 128], // độ mạnh rung (0-255)
+          pattern: [0, 500, 200, 500],
+          intensities: [128, 0, 128],
         );
       }
     } catch (e) {
@@ -178,7 +174,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                       maxLength: 2,
                       decoration: const InputDecoration(
                         hintText: 'Giây',
-                        counterText: '',
+counterText: '',
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -238,9 +234,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  laPhienTapTrung
-                      ? Icons.center_focus_strong_rounded
-                      : Icons.coffee_rounded,
+                  laPhienTapTrung ? Icons.center_focus_strong_rounded : Icons.coffee_rounded,
                   size: 50,
                   color: Colors.white.withOpacity(0.85),
                 ),
@@ -269,7 +263,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                                 color: Colors.white.withOpacity(0.12),
                                 blurRadius: 25,
                                 offset: const Offset(-8, -8),
-                              ),
+),
                             ],
                           ),
                         ),
@@ -324,37 +318,25 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                     ElevatedButton.icon(
                       onPressed: batDauHoacTamDung,
                       icon: Icon(
-                        dangChay
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
+                        dangChay ? Icons.pause_rounded : Icons.play_arrow_rounded,
                         size: 40,
                       ),
                       label: Text(
                         dangChay ? 'Tạm dừng' : 'Bắt đầu',
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 50,
-                          vertical: 22,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 22),
                         backgroundColor: Colors.white,
-                        foregroundColor: dangChay
-                            ? Colors.red[700]
-                            : Colors.green[700],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40),
-                        ),
+                        foregroundColor: dangChay ? Colors.red[700] : Colors.green[700],
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                         elevation: 10,
                         shadowColor: dangChay
                             ? Colors.red.withOpacity(0.5)
                             : Colors.green.withOpacity(0.5),
                       ),
                     ),
-                    const SizedBox(width: 32),
+const SizedBox(width: 32),
                     OutlinedButton.icon(
                       onPressed: () {
                         setState(() {
@@ -368,21 +350,13 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                       icon: const Icon(Icons.refresh_rounded, size: 36),
                       label: const Text(
                         'Đặt lại',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                       ),
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 22,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
                         foregroundColor: Colors.white,
                         side: const BorderSide(color: Colors.white, width: 2.5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                       ),
                     ),
                   ],
@@ -400,17 +374,12 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
         unselectedFontSize: 12,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Đồng hồ'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Thống kê',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            label: 'Thông tin nhóm',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Thống kê'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Thông tin nhóm'),
         ],
         currentIndex: 0,
-        onTap: (index) {},
+        onTap: (index) {
+        },
       ),
     );
   }
