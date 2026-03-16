@@ -22,17 +22,18 @@ class ManHinhThongKe extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thống kê'),
+        title: const Text('Thống kê', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFF120326),
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blueGrey, Colors.blueGrey.shade700],
+            colors: [Color(0xFF120326), Color(0xFF3C096C)],
           ),
         ),
         child: SafeArea(

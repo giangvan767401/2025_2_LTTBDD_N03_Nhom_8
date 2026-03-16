@@ -72,12 +72,22 @@ class _ManHinhCaiDatState extends State<ManHinhCaiDat> {
       child: TextField(
         controller: controller,
         keyboardType: TextInputType.number,
+        style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon),
+          labelStyle: const TextStyle(color: Colors.white70),
+          prefixIcon: Icon(icon, color: Colors.white70),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.white30),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFF9D50FF), width: 2),
+          ),
           filled: true,
-          fillColor: Colors.grey[100],
+          fillColor: Colors.white.withOpacity(0.1),
         ),
       ),
     );
@@ -86,64 +96,59 @@ class _ManHinhCaiDatState extends State<ManHinhCaiDat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF3C096C),
       appBar: AppBar(
-        title: const Text('Cài đặt Pomodoro'),
-        backgroundColor: Colors.blueGrey[900],
-        foregroundColor: Colors.white,
+        title: const Text('Cài đặt Pomodoro', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF120326),
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Cấu hình thời gian (Phút)',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              'Thời gian tập trung',
-              _tapTrungController,
-              Icons.center_focus_strong,
-            ),
-            _buildTextField(
-              'Thời gian nghỉ ngắn',
-              _nghiNganController,
-              Icons.local_cafe,
-            ),
-            _buildTextField(
-              'Thời gian nghỉ dài',
-              _nghiDaiController,
-              Icons.weekend,
-            ),
-            const Divider(height: 32),
-            const Text(
-              'Chu kỳ',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              'Số phiên để nghỉ dài',
-              _chuKyController,
-              Icons.loop,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _luuCaiDat,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Colors.blueGrey[900],
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF120326), Color(0xFF3C096C)],
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Cấu hình thời gian (Phút)',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              const SizedBox(height: 16),
+              _buildTextField('Thời gian tập trung', _tapTrungController, Icons.center_focus_strong),
+              _buildTextField('Thời gian nghỉ ngắn', _nghiNganController, Icons.local_cafe),
+              _buildTextField('Thời gian nghỉ dài', _nghiDaiController, Icons.weekend),
+              const Divider(height: 32, color: Colors.white30),
+              const Text(
+                'Chu kỳ',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              const SizedBox(height: 16),
+              _buildTextField('Số phiên để nghỉ dài', _chuKyController, Icons.loop),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _luuCaiDat,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: const Color(0xFF9D50FF),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Lưu cài đặt',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
-              child: const Text(
-                'Lưu cài đặt',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
