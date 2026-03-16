@@ -97,10 +97,10 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
   List<Color> layMauGradient() {
     if (dangChay) {
       return laPhienTapTrung
-          ? [const Color(0xFF120326), const Color(0xFF3C096C)] // Tím đen vũ trụ khi tập trung
-          : [const Color(0xFF0A0118), const Color(0xFF1B0B3B)]; // Tím sâu hơn khi nghỉ
+          ? [const Color(0xFF120326), const Color(0xFF3C096C)] 
+          : [const Color(0xFF0A0118), const Color(0xFF1B0B3B)]; 
     }
-    return [const Color(0xFF05010D), const Color(0xFF0D0221)]; // Gần như đen khi sẵn sàng
+    return [const Color(0xFF05010D), const Color(0xFF0D0221)]; 
   }
 
   String layTrangThai() {
@@ -280,34 +280,56 @@ counterText: '',
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Ảnh hình tròn – nhấn vào để thay đổi thời gian
               GestureDetector(
                 onTap: _moHopThoaiNhapThoiGian,
-                child: Container(
-                  width: 240,
-                  height: 240,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.purple.withOpacity(0.5),
-                        blurRadius: 30,
-                        spreadRadius: 8,
+                child: SizedBox(
+                  width: 260,
+                  height: 260,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Vòng tròn tiến trình xanh lá chạy bao quanh
+                      SizedBox(
+                        width: 260,
+                        height: 260,
+                        child: CircularProgressIndicator(
+                          value: 1.0 - layGiaTriTienDo(), // đầy -> cạn dần
+                          strokeWidth: 7,
+                          backgroundColor: Colors.green.withOpacity(0.15),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            Color(0xFF80FF80), // xanh lá cây nhạt
+                          ),
+                          strokeCap: StrokeCap.round,
+                        ),
+                      ),
+                      // Ảnh hình tròn bên trong
+                      Container(
+                        width: 236,
+                        height: 236,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.purple.withOpacity(0.5),
+                              blurRadius: 30,
+                              spreadRadius: 8,
+                            ),
+                          ],
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/tree1.jpg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     ],
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/tree1.jpg',
-                      fit: BoxFit.cover,
-                    ),
                   ),
                 ),
               ),
 
               const SizedBox(height: 40),
 
-              // Số thời gian đếm ngược
               Text(
                 layChuoiThoiGian(),
                 style: const TextStyle(
@@ -318,7 +340,6 @@ counterText: '',
                 ),
               ),
 
-              // Trạng thái
               Text(
                 layTrangThai(),
                 style: TextStyle(
@@ -330,7 +351,6 @@ counterText: '',
 
               const SizedBox(height: 56),
 
-              // Hai nút xếp dọc, full width
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Column(
@@ -389,7 +409,7 @@ counterText: '',
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black.withOpacity(0.4),
+        backgroundColor: Colors.black,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
         selectedFontSize: 14,
