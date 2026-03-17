@@ -46,9 +46,9 @@ class ManHinhThongTinNhom extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildMemberItem('23010536', 'Phạm Văn Giang'),
+                _buildMemberItem('23010536', 'Phạm Văn Giang', 'assets/images/giang.jpg'),
                 const SizedBox(height: 12),
-                _buildMemberItem('23010052', 'Nguyễn Hữu Tình'),
+                _buildMemberItem('23010052', 'Nguyễn Hữu Tình', 'assets/images/tinh.jpg'),
               ],
             ),
           ),
@@ -57,7 +57,7 @@ class ManHinhThongTinNhom extends StatelessWidget {
     );
   }
 
-  Widget _buildMemberItem(String id, String name) {
+  Widget _buildMemberItem(String id, String name, String imagePath) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
@@ -67,13 +67,10 @@ class ManHinhThongTinNhom extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: const Color(0xFF9D50FF).withOpacity(0.2),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.person, color: Color(0xFF9D50FF)),
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: const Color(0xFF9D50FF),
+            backgroundImage: AssetImage(imagePath),
           ),
           const SizedBox(width: 16),
           Expanded(
