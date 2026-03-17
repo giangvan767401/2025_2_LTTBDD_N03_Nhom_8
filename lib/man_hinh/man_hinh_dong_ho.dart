@@ -20,7 +20,7 @@ class ManHinhDongHo extends StatefulWidget {
   State<ManHinhDongHo> createState() => _ManHinhDongHoState();
 }
 
-class _ManHinhDongHoState extends State<ManHinhDongHo> {
+class _ManHinhDongHoState extends State<ManHinhDongHo> with WidgetsBindingObserver {
 
   static const List<Map<String, dynamic>> dsNguongMoKhoa = [
     {'anh': 'assets/images/tree1.jpg', 'phutCanDat': 0},     
@@ -57,6 +57,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _taiCaiDat().then((_) {
       _capNhatThoiGianHienTai();
     });
@@ -103,6 +104,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _audioPlayer.dispose();
     _gioController.dispose();
