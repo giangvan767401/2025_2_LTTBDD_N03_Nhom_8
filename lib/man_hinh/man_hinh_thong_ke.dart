@@ -5,158 +5,93 @@ import 'package:provider/provider.dart';
 import '../quan_ly_ngon_ngu.dart';
 import '../chuoi_van_ban.dart';
 
-// ─── Bước 1: Hàm xử lý dữ liệu 7 ngày ────────────────────────────────────────
-
-/// Trả về Map<int, int> với key là weekday (1=T2 ... 7=CN), value là số phiên
 Map<int, int> layDuLieu7Ngay(List<PhienPomodoro> danhSachPhien) {
   final DateTime homNay = DateTime.now();
-  // Lấy đầu tuần hiện tại (Thứ 2)
   final DateTime dauTuan = homNay.subtract(Duration(days: homNay.weekday - 1));
 
-  // Khởi tạo map với 7 ngày, mặc định = 0
   final Map<int, int> ketQua = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0};
 
   for (final phien in danhSachPhien) {
     final ngay = phien.thoiGianHoanThanh;
-    // Chỉ tính phiên trong tuần này
     if (ngay.isAfter(dauTuan.subtract(const Duration(seconds: 1))) &&
         ngay.isBefore(dauTuan.add(const Duration(days: 7)))) {
-      final thu = ngay.weekday; // 1=T2, 7=CN
+      final thu = ngay.weekday;
       ketQua[thu] = (ketQua[thu] ?? 0) + 1;
     }
   }
   return ketQua;
 }
 
-// ─── Bước 2: Widget biểu đồ thanh (Custom Bar Chart) ──────────────────────────
-
-class BieuDoThanh extends StatefulWidget {
+class BieuDoThanh extends StatelessWidget {
   final Map<int, int> duLieu7Ngay;
 
   const BieuDoThanh({super.key, required this.duLieu7Ngay});
 
-  @override
-  State<BieuDoThanh> createState() => _BieuDoThanhState();
-}
-
-class _BieuDoThanhState extends State<BieuDoThanh>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
   static const List<String> _tenThu = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
   @override
-  void initState() {
-    super.initState();
-    // Animation "mọc lên" khi mở màn hình
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    );
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final int maxPhien = widget.duLieu7Ngay.values.fold(0, (a, b) => a > b ? a : b);
-    final int hienThi = maxPhien < 1 ? 1 : maxPhien; // tránh chia cho 0
+    final int maxPhien = duLieu7Ngay.values.fold(0, (a, b) => a > b ? a : b);
+    final int hienThi = maxPhien < 1 ? 1 : maxPhien;
     final int thuHomNay = DateTime.now().weekday;
 
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, _) {
-        return SizedBox(
-          height: 180,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: List.generate(7, (i) {
-              final int thu = i + 1; // 1=T2 ... 7=CN
-              final int soPhien = widget.duLieu7Ngay[thu] ?? 0;
-              final double tyLe = (soPhien / hienThi) * _animation.value;
-              final bool laHomNay = thu == thuHomNay;
+    return SizedBox(
+      height: 180,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: List.generate(7, (i) {
+          final int thu = i + 1;
+          final int soPhien = duLieu7Ngay[thu] ?? 0;
+          final double tyLe = soPhien / hienThi;
+          final bool laHomNay = thu == thuHomNay;
 
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      // Số phiên trên đầu thanh
-                      if (soPhien > 0)
-                        Text(
-                          '$soPhien',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: laHomNay ? const Color(0xFF80FF80) : Colors.white70,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      const SizedBox(height: 2),
-                      // Thanh biểu đồ
-                      Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          // Nền mờ
-                          Container(
-                            height: 140,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.05),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                          ),
-                          // Thanh thực
-                          Container(
-                            height: 140 * tyLe.clamp(0.0, 1.0),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: laHomNay
-                                    ? [const Color(0xFF80FF80), const Color(0xFF00BFFF)]
-                                    : [const Color(0xFF9D50FF), const Color(0xFFE040FB)],
-                              ),
-                              borderRadius: BorderRadius.circular(6),
-                              boxShadow: laHomNay
-                                  ? [BoxShadow(color: const Color(0xFF80FF80).withOpacity(0.4), blurRadius: 8)]
-                                  : [],
-                            ),
-                          ),
-                        ],
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (soPhien > 0)
+                    Text(
+                      '$soPhien',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: laHomNay ? const Color(0xFF80FF80) : Colors.white70,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 4),
-                      // Nhãn thứ
-                      Text(
-                        _tenThu[i],
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: laHomNay ? const Color(0xFF80FF80) : Colors.white54,
-                          fontWeight: laHomNay ? FontWeight.bold : FontWeight.normal,
-                        ),
+                    ),
+                  const SizedBox(height: 2),
+                  Container(
+                    height: 140 * tyLe.clamp(0.0, 1.0),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: laHomNay
+                            ? [const Color(0xFF80FF80), const Color(0xFF00BFFF)]
+                            : [const Color(0xFF9D50FF), const Color(0xFFE040FB)],
                       ),
-                    ],
+                      borderRadius: BorderRadius.circular(6),
+                    ),
                   ),
-                ),
-              );
-            }),
-          ),
-        );
-      },
+                  const SizedBox(height: 4),
+                  Text(
+                    _tenThu[i],
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: laHomNay ? const Color(0xFF80FF80) : Colors.white54,
+                      fontWeight: laHomNay ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ),
     );
   }
 }
-
-// ─── Màn hình Thống kê ─────────────────────────────────────────────────────────
 
 class ManHinhThongKe extends StatelessWidget {
   final List<PhienPomodoro> danhSachPhien;
@@ -168,7 +103,6 @@ class ManHinhThongKe extends StatelessWidget {
     final lang = context.watch<QuanLyNgonNgu>().ngonNgu;
     final strings = chuoiVanBan[lang]!;
 
-    // Dữ liệu hôm nay
     final DateTime homNay = DateTime.now();
     final List<PhienPomodoro> phienHomNay = danhSachPhien.where((phien) {
       return phien.thoiGianHoanThanh.year == homNay.year &&
@@ -180,11 +114,10 @@ class ManHinhThongKe extends StatelessWidget {
     final int tongPhutHomNay = phienHomNay.fold(0, (sum, p) => sum + (p.thoiLuongGiay ~/ 60));
     final int tongPhutTatCa = danhSachPhien.fold(0, (sum, p) => sum + (p.thoiLuongGiay ~/ 60));
 
-    // Dữ liệu 7 ngày cho biểu đồ
     final Map<int, int> duLieu7Ngay = layDuLieu7Ngay(danhSachPhien);
 
     return Scaffold(
-      backgroundColor: Colors.transparent, // Phải để transparent để thấy màu nền đằng sau
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(strings['thongKe']!, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
@@ -207,8 +140,7 @@ class ManHinhThongKe extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  // ── Card biểu đồ ──
+                  // Card biểu đồ
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
@@ -247,10 +179,9 @@ class ManHinhThongKe extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // ── Hai card thống kê cạnh nhau ──
+                  // Hai card thống kê
                   Row(
                     children: [
-                      // Hôm nay
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(20),
@@ -282,7 +213,6 @@ class ManHinhThongKe extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      // Tổng cộng
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(20),
@@ -318,7 +248,6 @@ class ManHinhThongKe extends StatelessWidget {
 
                   const SizedBox(height: 32),
 
-                  // ── Câu chúc ──
                   Center(
                     child: Text(
                       strings['chucMung']!,
@@ -338,4 +267,3 @@ class ManHinhThongKe extends StatelessWidget {
     );
   }
 }
-
