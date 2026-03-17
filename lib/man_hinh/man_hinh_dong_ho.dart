@@ -105,8 +105,23 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> with WidgetsBindingObserv
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    // Ở bước 2, chúng ta chỉ mới ghi đè phương thức để nhận diện sự thay đổi trạng thái
-    debugPrint('AppLifecycleState changed to: $state');
+    
+    // Nếu App bị ẩn/chuyển tab (inactive), tạm dừng nền (paused) hoặc bị đóng (detached) → huỷ phiên
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused || 
+        state == AppLifecycleState.detached) {
+      
+      if (dangChay) {
+        _timer?.cancel();
+        setState(() {
+          dangChay = false;
+          // Reset về trạng thái ban đầu của phiên tập trung
+          laPhienTapTrung = true;
+          _capNhatThoiGianHienTai();
+        });
+        debugPrint('Phiên bị huỷ do người dùng thoát ứng dụng.');
+      }
+    }
   }
 
   @override
@@ -525,6 +540,17 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> with WidgetsBindingObserv
           unselectedFontSize: 12,
           currentIndex: 0,
           onTap: (index) {
+            // Nếu đồng hồ đang chạy, chặn điều hướng và hiển thị cảnh báo
+            if (dangChay && index != 0) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('⏱ Hãy tạm dừng đồng hồ trước khi rời khỏi màn hình này!'),
+                  duration: Duration(seconds: 2),
+                  backgroundColor: Color(0xFF9D50FF),
+                ),
+              );
+              return;
+            }
             if (index == 1) {
               Navigator.push(
                 context,
