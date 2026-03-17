@@ -15,6 +15,18 @@ class ManHinhDongHo extends StatefulWidget {
 }
 
 class _ManHinhDongHoState extends State<ManHinhDongHo> {
+
+  // Danh sách ảnh cây và số phút tích lũy cần để mở khóa (theo thứ tự)
+  static const List<Map<String, dynamic>> dsNguongMoKhoa = [
+    {'anh': 'assets/images/tree1.jpg', 'phutCanDat': 0},     // Mặc định
+    {'anh': 'assets/images/tree2.jpg', 'phutCanDat': 25},    // 25 phút
+    {'anh': 'assets/images/tree3.jpg', 'phutCanDat': 60},    // 1 giờ
+    {'anh': 'assets/images/tree4.jpg', 'phutCanDat': 120},   // 2 giờ
+    {'anh': 'assets/images/tree5.jpg', 'phutCanDat': 240},   // 4 giờ
+    {'anh': 'assets/images/tree6.jpg', 'phutCanDat': 480},   // 8 giờ
+    {'anh': 'assets/images/tree7.jpg', 'phutCanDat': 960},   // 16 giờ
+    {'anh': 'assets/images/tree8.jpg', 'phutCanDat': 1440},  // 24 giờ
+  ];
   int giayConLai = 25 * 60; 
   int tongGiayBanDau = 25 * 60;
   bool dangChay = false;
