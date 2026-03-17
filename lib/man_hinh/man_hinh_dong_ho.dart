@@ -5,6 +5,7 @@ import 'package:vibration/vibration.dart';
 import '../models/phien_pomodoro.dart'; 
 import 'man_hinh_thong_ke.dart';
 import 'man_hinh_cai_dat.dart';
+import 'man_hinh_bo_suu_tap_cay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ManHinhDongHo extends StatefulWidget {
@@ -36,6 +37,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
   List<PhienPomodoro> danhSachPhien = [];
   int soPhienDaHoc = 0;
   int tongPhutTichLuy = 0; // Tổng số phút tập trung tích lũy
+  String _anhCayHienTai = 'assets/images/tree1.jpg'; // Ảnh cây đang dùng
 
   // Cấu hình mặc định
   int _thoiGianTapTrungPhut = 25;
@@ -68,6 +70,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
       // Load dữ liệu tích lũy
       soPhienDaHoc = prefs.getInt('soPhienDaHoc') ?? 0;
       tongPhutTichLuy = prefs.getInt('tongPhutTichLuy') ?? 0;
+      _anhCayHienTai = prefs.getString('anhCayHienTai') ?? 'assets/images/tree1.jpg';
     });
   }
   
@@ -306,134 +309,176 @@ counterText: '',
           ),
         ),
         child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: _moHopThoaiNhapThoiGian,
-                child: SizedBox(
-                  width: 260,
-                  height: 260,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Vòng tròn tiến trình xanh lá chạy bao quanh
-                      SizedBox(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Nút Cửa hàng cây ở góc trên
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16, top: 8),
+                    child: TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ManHinhBoSuuTapCay(
+                              tongPhutTichLuy: tongPhutTichLuy,
+                              anhCayDangDung: _anhCayHienTai,
+                            ),
+                          ),
+                        ).then((newPath) {
+                          if (newPath != null) {
+                            setState(() {
+                              _anhCayHienTai = newPath;
+                            });
+                          }
+                        });
+                      },
+                      icon: const Icon(Icons.park_rounded, color: Color(0xFF80FF80)),
+                      label: const Text('Cây', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white.withOpacity(0.1),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      ),
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 20), // Tạo khoảng cách giữa nút Cây và nội dung chính
+
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: _moHopThoaiNhapThoiGian,
+                      child: SizedBox(
                         width: 260,
                         height: 260,
-                        child: CircularProgressIndicator(
-                          value: 1.0 - layGiaTriTienDo(), // đầy -> cạn dần
-                          strokeWidth: 7,
-                          backgroundColor: Colors.green.withOpacity(0.15),
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            Color(0xFF80FF80), // xanh lá cây nhạt
-                          ),
-                          strokeCap: StrokeCap.round,
-                        ),
-                      ),
-                      // Ảnh hình tròn bên trong
-                      Container(
-                        width: 236,
-                        height: 236,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.purple.withOpacity(0.5),
-                              blurRadius: 30,
-                              spreadRadius: 8,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Vòng tròn tiến trình xanh lá chạy bao quanh
+                            SizedBox(
+                              width: 260,
+                              height: 260,
+                              child: CircularProgressIndicator(
+                                value: 1.0 - layGiaTriTienDo(), // đầy -> cạn dần
+                                strokeWidth: 7,
+                                backgroundColor: Colors.green.withOpacity(0.15),
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                  Color(0xFF80FF80), // xanh lá cây nhạt
+                                ),
+                                strokeCap: StrokeCap.round,
+                              ),
+                            ),
+                            // Ảnh hình tròn bên trong
+                            Container(
+                              width: 236,
+                              height: 236,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.purple.withOpacity(0.5),
+                                    blurRadius: 30,
+                                    spreadRadius: 8,
+                                  ),
+                                ],
+                              ),
+                              child: ClipOval(
+                                child: Image.asset(
+                                  _anhCayHienTai,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                        child: ClipOval(
-                          child: Image.asset(
-                            'assets/images/tree1.jpg',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 40),
-
-              Text(
-                layChuoiThoiGian(),
-                style: const TextStyle(
-                  fontSize: 72,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 2,
-                ),
-              ),
-
-              Text(
-                layTrangThai(),
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.purple[100],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-
-              const SizedBox(height: 56),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: batDauHoacTamDung,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF9D50FF),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          elevation: 8,
-                        ),
-                        child: Text(
-                          dangChay ? 'Tạm dừng' : 'Bắt đầu',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          setState(() {
-                            dangChay = false;
-                            laPhienTapTrung = true;
-                            _capNhatThoiGianHienTai();
-                          });
-                          _timer?.cancel();
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          side: BorderSide(color: Colors.white.withOpacity(0.35), width: 1.5),
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+
+                    const SizedBox(height: 40),
+
+                    Text(
+                      layChuoiThoiGian(),
+                      style: const TextStyle(
+                        fontSize: 72,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 2,
+                      ),
+                    ),
+
+                    Text(
+                      layTrangThai(),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.purple[100],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+
+                    const SizedBox(height: 56),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: batDauHoacTamDung,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF9D50FF),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 18),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                elevation: 8,
+                              ),
+                              child: Text(
+                                dangChay ? 'Tạm dừng' : 'Bắt đầu',
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ),
-                          backgroundColor: Colors.white.withOpacity(0.06),
-                        ),
-                        child: const Text(
-                          'Đặt lại',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                        ),
+                          const SizedBox(height: 14),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                setState(() {
+                                  dangChay = false;
+                                  laPhienTapTrung = true;
+                                  _capNhatThoiGianHienTai();
+                                });
+                                _timer?.cancel();
+                              },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: BorderSide(color: Colors.white.withOpacity(0.35), width: 1.5),
+                                padding: const EdgeInsets.symmetric(vertical: 18),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                backgroundColor: Colors.white.withOpacity(0.06),
+                              ),
+                              child: const Text(
+                                'Đặt lại',
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 40), // Khoảng trống cuối để cân bằng
+              ],
+            ),
           ),
         ),
       ),
@@ -446,22 +491,22 @@ counterText: '',
         currentIndex: 0,
         onTap: (index) {
           if (index == 1) {
-           Navigator.push(
-            context,
-            MaterialPageRoute(
-               builder: (context) => ManHinhThongKe(danhSachPhien: danhSachPhien),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ManHinhThongKe(danhSachPhien: danhSachPhien),
               ),
             );
-         } else if (index == 2) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const ManHinhCaiDat()),
             ).then((_) {
-               _taiCaiDat().then((_) {
-                  _capNhatThoiGianHienTai();
-               });
+              _taiCaiDat().then((_) {
+                _capNhatThoiGianHienTai();
+              });
             });
-         }
+          }
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Đồng hồ'),
