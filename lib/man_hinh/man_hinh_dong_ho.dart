@@ -35,6 +35,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
   List<PhienPomodoro> danhSachPhien = [];
   int soPhienDaHoc = 0;
+  int tongPhutTichLuy = 0; // Tổng số phút tập trung tích lũy
 
   // Cấu hình mặc định
   int _thoiGianTapTrungPhut = 25;
@@ -63,6 +64,10 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
       _thoiGianNghiNganPhut = prefs.getInt('thoiGianNghiNganPhut') ?? 5;
       _thoiGianNghiDaiPhut = prefs.getInt('thoiGianNghiDaiPhut') ?? 15;
       _chuKyNghiDai = prefs.getInt('chuKyNghiDai') ?? 4;
+      
+      // Load dữ liệu tích lũy
+      soPhienDaHoc = prefs.getInt('soPhienDaHoc') ?? 0;
+      tongPhutTichLuy = prefs.getInt('tongPhutTichLuy') ?? 0;
     });
   }
   
@@ -140,23 +145,35 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
               if (laPhienTapTrung) {
                 soPhienDaHoc++;
+                int phutHoanThanh = tongGiayBanDau ~/ 60;
+                tongPhutTichLuy += phutHoanThanh;
+                
                 danhSachPhien.add(PhienPomodoro(
                   thoiGianHoanThanh: DateTime.now(),
-                  thoiLuongPhut: tongGiayBanDau ~/ 60, 
+                  thoiLuongPhut: phutHoanThanh, 
                 ));
+
+                // Lưu lại ngay khi hoàn thành phiên tập trung
+                _luuTienDoTichLuy();
               }
 
               laPhienTapTrung = !laPhienTapTrung;
               _capNhatThoiGianHienTai();
 
               _phatAmThanhVaRung();
-
           }
         });
       });
     } else {
       _timer?.cancel();
     }
+  }
+
+  // Hàm lưu dữ liệu tích lũy vào máy
+  Future<void> _luuTienDoTichLuy() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('soPhienDaHoc', soPhienDaHoc);
+    await prefs.setInt('tongPhutTichLuy', tongPhutTichLuy);
   }
 
   Future<void> _phatAmThanhVaRung() async {
