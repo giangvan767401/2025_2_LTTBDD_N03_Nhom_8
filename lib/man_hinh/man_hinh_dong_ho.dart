@@ -267,7 +267,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                       maxLength: 2,
                       decoration: const InputDecoration(
                         hintText: 'Giây',
-counterText: '',
+                        counterText: '',
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -493,43 +493,51 @@ counterText: '',
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
-        selectedFontSize: 14,
-        unselectedFontSize: 12,
-        currentIndex: 0,
-        onTap: (index) {
-          if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ManHinhThongKe(danhSachPhien: danhSachPhien),
-              ),
-            );
-          } else if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ManHinhCaiDat()),
-            ).then((_) {
-              _taiCaiDat().then((_) {
-                _capNhatThoiGianHienTai();
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            backgroundColor: Colors.black,
+          ),
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.black,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white70,
+          selectedFontSize: 14,
+          unselectedFontSize: 12,
+          currentIndex: 0,
+          onTap: (index) {
+            if (index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ManHinhThongKe(danhSachPhien: danhSachPhien),
+                ),
+              );
+            } else if (index == 2) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ManHinhCaiDat()),
+              ).then((_) {
+                _taiCaiDat().then((_) {
+                  _capNhatThoiGianHienTai();
+                });
               });
-            });
-          } else if (index == 3) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ManHinhThongTinNhom()),
-            );
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Đồng hồ'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Thống kê'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Cài đặt'),
-          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Thông tin'),
-        ],
+            } else if (index == 3) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ManHinhThongTinNhom()),
+              );
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Đồng hồ'),
+            BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Thống kê'),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Cài đặt'),
+            BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Thông tin'),
+          ],
+        ),
       ),
     );
   }
