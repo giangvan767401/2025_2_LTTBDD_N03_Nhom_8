@@ -8,6 +8,7 @@ import 'man_hinh_thong_ke.dart';
 import 'man_hinh_cai_dat.dart';
 import 'man_hinh_bo_suu_tap_cay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'man_hinh_thong_tin_nhom.dart';
 
 class ManHinhDongHo extends StatefulWidget {
   const ManHinhDongHo({super.key});
@@ -516,12 +517,18 @@ counterText: '',
                 _capNhatThoiGianHienTai();
               });
             });
+          } else if (index == 3) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ManHinhThongTinNhom()),
+            );
           }
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Đồng hồ'),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Thống kê'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Cài đặt'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Thông tin'),
         ],
       ),
     );
