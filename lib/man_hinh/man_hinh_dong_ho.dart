@@ -17,16 +17,15 @@ class ManHinhDongHo extends StatefulWidget {
 
 class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
-  // Danh sách ảnh cây và số phút tích lũy cần để mở khóa (theo thứ tự)
   static const List<Map<String, dynamic>> dsNguongMoKhoa = [
-    {'anh': 'assets/images/tree1.jpg', 'phutCanDat': 0},     // Mặc định
-    {'anh': 'assets/images/tree2.jpg', 'phutCanDat': 25},    // 25 phút
-    {'anh': 'assets/images/tree3.jpg', 'phutCanDat': 60},    // 1 giờ
-    {'anh': 'assets/images/tree4.jpg', 'phutCanDat': 120},   // 2 giờ
-    {'anh': 'assets/images/tree5.jpg', 'phutCanDat': 240},   // 4 giờ
-    {'anh': 'assets/images/tree6.jpg', 'phutCanDat': 480},   // 8 giờ
-    {'anh': 'assets/images/tree7.jpg', 'phutCanDat': 960},   // 16 giờ
-    {'anh': 'assets/images/tree8.jpg', 'phutCanDat': 1440},  // 24 giờ
+    {'anh': 'assets/images/tree1.jpg', 'phutCanDat': 0},     
+    {'anh': 'assets/images/tree2.jpg', 'phutCanDat': 25},    
+    {'anh': 'assets/images/tree3.jpg', 'phutCanDat': 60},    
+    {'anh': 'assets/images/tree4.jpg', 'phutCanDat': 120},   
+    {'anh': 'assets/images/tree5.jpg', 'phutCanDat': 240},   
+    {'anh': 'assets/images/tree6.jpg', 'phutCanDat': 480},   
+    {'anh': 'assets/images/tree7.jpg', 'phutCanDat': 960},   
+    {'anh': 'assets/images/tree8.jpg', 'phutCanDat': 1440},  
   ];
   int giayConLai = 25 * 60; 
   int tongGiayBanDau = 25 * 60;
@@ -36,10 +35,9 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
   List<PhienPomodoro> danhSachPhien = [];
   int soPhienDaHoc = 0;
-  int tongPhutTichLuy = 0; // Tổng số phút tập trung tích lũy
-  String _anhCayHienTai = 'assets/images/tree1.jpg'; // Ảnh cây đang dùng
+  int tongPhutTichLuy = 0; 
+  String _anhCayHienTai = 'assets/images/tree1.jpg'; 
 
-  // Cấu hình mặc định
   int _thoiGianTapTrungPhut = 25;
   int _thoiGianNghiNganPhut = 5;
   int _thoiGianNghiDaiPhut = 15;
@@ -67,7 +65,6 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
       _thoiGianNghiDaiPhut = prefs.getInt('thoiGianNghiDaiPhut') ?? 15;
       _chuKyNghiDai = prefs.getInt('chuKyNghiDai') ?? 4;
       
-      // Load dữ liệu tích lũy
       soPhienDaHoc = prefs.getInt('soPhienDaHoc') ?? 0;
       tongPhutTichLuy = prefs.getInt('tongPhutTichLuy') ?? 0;
       _anhCayHienTai = prefs.getString('anhCayHienTai') ?? 'assets/images/tree1.jpg';
@@ -156,7 +153,6 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                   thoiLuongPhut: phutHoanThanh, 
                 ));
 
-                // Lưu lại ngay khi hoàn thành phiên tập trung
                 _luuTienDoTichLuy();
               }
 
@@ -312,7 +308,6 @@ counterText: '',
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Nút Cửa hàng cây ở góc trên
                 Align(
                   alignment: Alignment.topRight,
                   child: Padding(
@@ -345,7 +340,7 @@ counterText: '',
                   ),
                 ),
                 
-                const SizedBox(height: 20), // Tạo khoảng cách giữa nút Cây và nội dung chính
+                const SizedBox(height: 20), 
 
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -358,21 +353,19 @@ counterText: '',
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            // Vòng tròn tiến trình xanh lá chạy bao quanh
                             SizedBox(
                               width: 260,
                               height: 260,
                               child: CircularProgressIndicator(
-                                value: 1.0 - layGiaTriTienDo(), // đầy -> cạn dần
+                                value: 1.0 - layGiaTriTienDo(),
                                 strokeWidth: 7,
                                 backgroundColor: Colors.green.withOpacity(0.15),
                                 valueColor: const AlwaysStoppedAnimation<Color>(
-                                  Color(0xFF80FF80), // xanh lá cây nhạt
+                                  Color(0xFF80FF80), 
                                 ),
                                 strokeCap: StrokeCap.round,
                               ),
                             ),
-                            // Ảnh hình tròn bên trong
                             Container(
                               width: 236,
                               height: 236,
@@ -476,7 +469,7 @@ counterText: '',
                     ),
                   ],
                 ),
-                const SizedBox(height: 40), // Khoảng trống cuối để cân bằng
+                const SizedBox(height: 40), 
               ],
             ),
           ),

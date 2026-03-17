@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ManHinhBoSuuTapCay extends StatefulWidget {
   final int tongPhutTichLuy;
@@ -15,6 +16,7 @@ class ManHinhBoSuuTapCay extends StatefulWidget {
 }
 
 class _ManHinhBoSuuTapCayState extends State<ManHinhBoSuuTapCay> {
+  // Bản sao của danh sách ngưỡng mở khóa (nên để ở một file chung hoặc truyền vào)
   final List<Map<String, dynamic>> dsNguongMoKhoa = [
     {'anh': 'assets/images/tree1.jpg', 'phutCanDat': 0, 'ten': 'Cây mầm'},
     {'anh': 'assets/images/tree2.jpg', 'phutCanDat': 25, 'ten': 'Cây xanh'},
@@ -25,6 +27,21 @@ class _ManHinhBoSuuTapCayState extends State<ManHinhBoSuuTapCay> {
     {'anh': 'assets/images/tree7.jpg', 'phutCanDat': 960, 'ten': 'Cây thần thoại'},
     {'anh': 'assets/images/tree8.jpg', 'phutCanDat': 1440, 'ten': 'Cây bất tử'},
   ];
+
+  Future<void> _chonAnh(String path, bool isLocked) async {
+    if (isLocked) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cây này chưa được mở khóa!')),
+      );
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('anhCayHienTai', path);
+    if (mounted) {
+      Navigator.pop(context, path);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +86,7 @@ class _ManHinhBoSuuTapCayState extends State<ManHinhBoSuuTapCay> {
                   final bool isUsing = widget.anhCayDangDung == item['anh'];
 
                   return GestureDetector(
+                    onTap: () => _chonAnh(item['anh'], isLocked),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.05),
@@ -115,10 +133,7 @@ class _ManHinhBoSuuTapCayState extends State<ManHinhBoSuuTapCay> {
                           if (isUsing)
                             const Padding(
                               padding: EdgeInsets.only(top: 4),
-                              child: Text(
-                                'Đang dùng',
-                                style: TextStyle(color: Color(0xFF80FF80), fontSize: 10),
-                              ),
+                              child: Text('Đang dùng', style: TextStyle(color: Color(0xFF80FF80), fontSize: 10)),
                             ),
                         ],
                       ),
