@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:vibration/vibration.dart';
 import '../models/phien_pomodoro.dart'; 
@@ -68,6 +69,14 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
       soPhienDaHoc = prefs.getInt('soPhienDaHoc') ?? 0;
       tongPhutTichLuy = prefs.getInt('tongPhutTichLuy') ?? 0;
       _anhCayHienTai = prefs.getString('anhCayHienTai') ?? 'assets/images/tree1.jpg';
+
+      // Load danh sách phiên đã học
+      List<String>? listRaw = prefs.getStringList('danhSachPhien');
+      if (listRaw != null) {
+        danhSachPhien = listRaw
+            .map((item) => PhienPomodoro.fromJson(jsonDecode(item)))
+            .toList();
+      }
     });
   }
   
@@ -145,12 +154,12 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
               if (laPhienTapTrung) {
                 soPhienDaHoc++;
-                int phutHoanThanh = tongGiayBanDau ~/ 60;
-                tongPhutTichLuy += phutHoanThanh;
+                int giayHoanThanh = tongGiayBanDau;
+                tongPhutTichLuy += (giayHoanThanh ~/ 60);
                 
                 danhSachPhien.add(PhienPomodoro(
                   thoiGianHoanThanh: DateTime.now(),
-                  thoiLuongPhut: phutHoanThanh, 
+                  thoiLuongGiay: giayHoanThanh, 
                 ));
 
                 _luuTienDoTichLuy();
@@ -171,8 +180,16 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
   // Hàm lưu dữ liệu tích lũy vào máy
   Future<void> _luuTienDoTichLuy() async {
     final prefs = await SharedPreferences.getInstance();
+    
+    // Lưu các biến số cơ bản
     await prefs.setInt('soPhienDaHoc', soPhienDaHoc);
     await prefs.setInt('tongPhutTichLuy', tongPhutTichLuy);
+
+    // Lưu danh sách phiên chi tiết (JSON)
+    List<String> listRaw = danhSachPhien
+        .map((item) => jsonEncode(item.toJson()))
+        .toList();
+    await prefs.setStringList('danhSachPhien', listRaw);
   }
 
   Future<void> _phatAmThanhVaRung() async {

@@ -1,9 +1,23 @@
 class PhienPomodoro {
   final DateTime thoiGianHoanThanh;
-  final int thoiLuongPhut; // 25 phút cho focus
+  final int thoiLuongGiay; 
 
   PhienPomodoro({
     required this.thoiGianHoanThanh,
-    required this.thoiLuongPhut,
+    required this.thoiLuongGiay,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'thoiGianHoanThanh': thoiGianHoanThanh.toIso8601String(),
+      'thoiLuongGiay': thoiLuongGiay,
+    };
+  }
+
+  factory PhienPomodoro.fromJson(Map<String, dynamic> json) {
+    return PhienPomodoro(
+      thoiGianHoanThanh: DateTime.parse(json['thoiGianHoanThanh']),
+      thoiLuongGiay: json['thoiLuongGiay'] ?? 0,
+    );
+  }
 }

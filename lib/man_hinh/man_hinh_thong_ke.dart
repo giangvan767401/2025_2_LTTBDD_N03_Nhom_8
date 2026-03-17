@@ -18,7 +18,7 @@ class ManHinhThongKe extends StatelessWidget {
     }).toList();
 
     int soPhienHomNay = phienHomNay.length;
-    int tongPhutHomNay = phienHomNay.fold(0, (sum, phien) => sum + phien.thoiLuongPhut);
+    int tongPhutHomNay = phienHomNay.fold(0, (sum, phien) => sum + (phien.thoiLuongGiay ~/ 60));
 
     return Scaffold(
       appBar: AppBar(
@@ -55,40 +55,51 @@ class ManHinhThongKe extends StatelessWidget {
                     padding: const EdgeInsets.all(32.0),
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           'Hôm nay',
-                          style: TextStyle(
-                            fontSize: 36,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(fontSize: 24, color: Colors.white70),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 8),
                         Text(
                           '$soPhienHomNay phiên',
-                          style: const TextStyle(
-                            fontSize: 48,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                          ),
+                          style: const TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 16),
                         Text(
-                          'Tổng thời gian: $tongPhutHomNay phút',
-                          style: const TextStyle(
-                            fontSize: 24,
-color: Colors.white70,
-                          ),
+                          'Thơi gian: $tongPhutHomNay phút',
+                          style: const TextStyle(fontSize: 16, color: Colors.white70),
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 48),
-                Text(
-                  'Chúc mừng bạn đã tập trung hôm nay!',
+                const SizedBox(height: 16),
+                // Card Tổng cộng
+                Card(
+                  elevation: 8,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  color: Colors.white.withOpacity(0.1),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Tất cả thời gian',
+                          style: TextStyle(fontSize: 18, color: Colors.white70),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${danhSachPhien.length} phiên | ${danhSachPhien.fold(0, (sum, p) => sum + (p.thoiLuongGiay ~/ 60))} phút',
+                          style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                const Text(
+                  'Chúc mừng bạn đã tập trung!',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: Colors.white70,
                     fontStyle: FontStyle.italic,
                   ),
