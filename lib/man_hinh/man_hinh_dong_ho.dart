@@ -103,6 +103,13 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> with WidgetsBindingObserv
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // Ở bước 2, chúng ta chỉ mới ghi đè phương thức để nhận diện sự thay đổi trạng thái
+    debugPrint('AppLifecycleState changed to: $state');
+  }
+
+  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
