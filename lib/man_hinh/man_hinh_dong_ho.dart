@@ -9,6 +9,9 @@ import 'man_hinh_cai_dat.dart';
 import 'man_hinh_bo_suu_tap_cay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'man_hinh_thong_tin_nhom.dart';
+import 'package:provider/provider.dart';
+import '../quan_ly_ngon_ngu.dart';
+import '../chuoi_van_ban.dart';
 
 class ManHinhDongHo extends StatefulWidget {
   const ManHinhDongHo({super.key});
@@ -130,11 +133,11 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
     return [const Color(0xFF05010D), const Color(0xFF0D0221)]; 
   }
 
-  String layTrangThai() {
+  String layTrangThai(String lang) {
     if (dangChay) {
-      return laPhienTapTrung ? 'Đang tập trung' : 'Đang nghỉ ngơi';
+      return laPhienTapTrung ? chuoiVanBan[lang]!['dangTapTrung']! : chuoiVanBan[lang]!['dangNghiNgoi']!;
     }
-    return 'Sẵn sàng bắt đầu';
+    return chuoiVanBan[lang]!['sanSang']!;
   }
 
   void batDauHoacTamDung() {
@@ -220,8 +223,10 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
     showDialog(
       context: context,
       builder: (context) {
+        final lang = context.watch<QuanLyNgonNgu>().ngonNgu;
+        final strings = chuoiVanBan[lang]!;
         return AlertDialog(
-          title: const Text('Nhập thời gian mong muốn'),
+          title: Text(strings['nhapThoiGian']!),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -235,10 +240,10 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       maxLength: 2,
-                      decoration: const InputDecoration(
-                        hintText: 'Giờ',
+                      decoration: InputDecoration(
+                        hintText: strings['gio'],
                         counterText: '',
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                   ),
@@ -250,10 +255,10 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       maxLength: 2,
-                      decoration: const InputDecoration(
-                        hintText: 'Phút',
+                      decoration: InputDecoration(
+                        hintText: strings['phut'],
                         counterText: '',
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                   ),
@@ -265,10 +270,10 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       maxLength: 2,
-                      decoration: const InputDecoration(
-                        hintText: 'Giây',
+                      decoration: InputDecoration(
+                        hintText: strings['giay'],
                         counterText: '',
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                   ),
@@ -279,7 +284,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Hủy'),
+              child: Text(strings['huy']!),
             ),
             TextButton(
               onPressed: () {
@@ -302,7 +307,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                 _timer?.cancel();
                 Navigator.pop(context);
               },
-              child: const Text('Xác nhận'),
+              child: Text(strings['xacNhan']!),
             ),
           ],
         );
@@ -312,6 +317,9 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = context.watch<QuanLyNgonNgu>().ngonNgu;
+    final strings = chuoiVanBan[lang]!;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -349,7 +357,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                         });
                       },
                       icon: const Icon(Icons.park_rounded, color: Color(0xFF80FF80)),
-                      label: const Text('Cây', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      label: Text(strings['cay']!, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.white.withOpacity(0.1),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -422,7 +430,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                     ),
 
                     Text(
-                      layTrangThai(),
+                      layTrangThai(lang),
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.purple[100],
@@ -450,7 +458,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                                 elevation: 8,
                               ),
                               child: Text(
-                                dangChay ? 'Tạm dừng' : 'Bắt đầu',
+                                dangChay ? strings['tamDung']! : strings['batDau']!,
                                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -476,9 +484,9 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
                                 ),
                                 backgroundColor: Colors.white.withOpacity(0.06),
                               ),
-                              child: const Text(
-                                'Đặt lại',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                              child: Text(
+                                strings['datLai']!,
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),
@@ -531,11 +539,11 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> {
               );
             }
           },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Đồng hồ'),
-            BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Thống kê'),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Cài đặt'),
-            BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Thông tin'),
+          items: [
+            BottomNavigationBarItem(icon: const Icon(Icons.timer), label: strings['batDau']),
+            BottomNavigationBarItem(icon: const Icon(Icons.bar_chart), label: strings['thongKe']),
+            BottomNavigationBarItem(icon: const Icon(Icons.settings), label: strings['caiDat']),
+            BottomNavigationBarItem(icon: const Icon(Icons.info), label: strings['thongTinNhom']),
           ],
         ),
       ),

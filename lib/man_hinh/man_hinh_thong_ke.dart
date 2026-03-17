@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'man_hinh_dong_ho.dart'; 
 import '../models/phien_pomodoro.dart'; 
+import 'package:provider/provider.dart';
+import '../quan_ly_ngon_ngu.dart';
+import '../chuoi_van_ban.dart';
 
 class ManHinhThongKe extends StatelessWidget {
   final List<PhienPomodoro> danhSachPhien;
@@ -9,6 +12,9 @@ class ManHinhThongKe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = context.watch<QuanLyNgonNgu>().ngonNgu;
+    final strings = chuoiVanBan[lang]!;
+
     // Lọc phiên hôm nay
     final DateTime homNay = DateTime.now();
     final List<PhienPomodoro> phienHomNay = danhSachPhien.where((phien) {
@@ -22,7 +28,7 @@ class ManHinhThongKe extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thống kê', style: TextStyle(color: Colors.white)),
+        title: Text(strings['thongKe']!, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: const Color(0xFF120326),
         elevation: 0,
@@ -55,17 +61,17 @@ class ManHinhThongKe extends StatelessWidget {
                     padding: const EdgeInsets.all(32.0),
                     child: Column(
                       children: [
-                        const Text(
-                          'Hôm nay',
-                          style: TextStyle(fontSize: 24, color: Colors.white70),
+                        Text(
+                          strings['homNay']!,
+                          style: const TextStyle(fontSize: 24, color: Colors.white70),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '$soPhienHomNay phiên',
+                          '$soPhienHomNay ${strings['phien']}',
                           style: const TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'Thơi gian: $tongPhutHomNay phút',
+                          '${strings['thoiGian']}: $tongPhutHomNay ${strings['phutDonVi']}',
                           style: const TextStyle(fontSize: 16, color: Colors.white70),
                         ),
                       ],
@@ -82,13 +88,13 @@ class ManHinhThongKe extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                     child: Column(
                       children: [
-                        const Text(
-                          'Tất cả thời gian',
-                          style: TextStyle(fontSize: 18, color: Colors.white70),
+                        Text(
+                          strings['tatCaThoiGian']!,
+                          style: const TextStyle(fontSize: 18, color: Colors.white70),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${danhSachPhien.length} phiên | ${danhSachPhien.fold(0, (sum, p) => sum + (p.thoiLuongGiay ~/ 60))} phút',
+                          '${danhSachPhien.length} ${strings['phien']} | ${danhSachPhien.fold(0, (sum, p) => sum + (p.thoiLuongGiay ~/ 60))} ${strings['phutDonVi']}',
                           style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                       ],
@@ -96,9 +102,9 @@ class ManHinhThongKe extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                const Text(
-                  'Chúc mừng bạn đã tập trung!',
-                  style: TextStyle(
+                Text(
+                  strings['chucMung']!,
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white70,
                     fontStyle: FontStyle.italic,

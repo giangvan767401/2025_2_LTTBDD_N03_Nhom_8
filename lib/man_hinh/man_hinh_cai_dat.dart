@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import '../quan_ly_ngon_ngu.dart';
+import '../chuoi_van_ban.dart';
 
 class ManHinhCaiDat extends StatefulWidget {
   const ManHinhCaiDat({super.key});
@@ -47,8 +50,9 @@ class _ManHinhCaiDatState extends State<ManHinhCaiDat> {
     await prefs.setInt('chuKyNghiDai', chuKy);
 
     if (mounted) {
+      final lang = context.read<QuanLyNgonNgu>().ngonNgu;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đã lưu cấu hình thành công!')),
+        SnackBar(content: Text(chuoiVanBan[lang]!['daLuu']!)),
       );
     }
   }
@@ -95,10 +99,14 @@ class _ManHinhCaiDatState extends State<ManHinhCaiDat> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = context.watch<QuanLyNgonNgu>();
+    final lang = languageProvider.ngonNgu;
+    final strings = chuoiVanBan[lang]!;
+
     return Scaffold(
       backgroundColor: const Color(0xFF3C096C),
       appBar: AppBar(
-        title: const Text('Cài đặt Pomodoro', style: TextStyle(color: Colors.white)),
+        title: Text(strings['caiDat']!, style: const TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF120326),
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
@@ -116,22 +124,49 @@ class _ManHinhCaiDatState extends State<ManHinhCaiDat> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Cấu hình thời gian (Phút)',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              Text(
+                strings['cauHinhThoiGian']!,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(height: 16),
-              _buildTextField('Thời gian tập trung', _tapTrungController, Icons.center_focus_strong),
-              _buildTextField('Thời gian nghỉ ngắn', _nghiNganController, Icons.local_cafe),
-              _buildTextField('Thời gian nghỉ dài', _nghiDaiController, Icons.weekend),
+              _buildTextField(strings['thoiGianTapTrung']!, _tapTrungController, Icons.center_focus_strong),
+              _buildTextField(strings['thoiGianNghiNgan']!, _nghiNganController, Icons.local_cafe),
+              _buildTextField(strings['thoiGianNghiDai']!, _nghiDaiController, Icons.weekend),
               const Divider(height: 32, color: Colors.white30),
-              const Text(
-                'Chu kỳ',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              Text(
+                strings['chuKy']!,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(height: 16),
-              _buildTextField('Số phiên để nghỉ dài', _chuKyController, Icons.loop),
-              const SizedBox(height: 24),
+              _buildTextField(strings['soPhienNghiDai']!, _chuKyController, Icons.loop),
+              const Divider(height: 32, color: Colors.white30),
+              Text(
+                strings['ngonNgu']!,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildOptionNgonNgu(
+                      strings['tiengViet']!,
+                      'vi',
+                      lang == 'vi',
+                      languageProvider,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildOptionNgonNgu(
+                      strings['tiengAnh']!,
+                      'en',
+                      lang == 'en',
+                      languageProvider,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _luuCaiDat,
                 style: ElevatedButton.styleFrom(
@@ -142,12 +177,38 @@ class _ManHinhCaiDatState extends State<ManHinhCaiDat> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'Lưu cài đặt',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                child: Text(
+                  strings['luuCaiDat']!,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionNgonNgu(String label, String code, bool isSelected, QuanLyNgonNgu provider) {
+    return GestureDetector(
+      onTap: () => provider.caiNgonNgu(code),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF9D50FF) : Colors.white.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? Colors.white : Colors.white24,
+            width: 1,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
           ),
         ),
       ),

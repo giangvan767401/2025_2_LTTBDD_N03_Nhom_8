@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../quan_ly_ngon_ngu.dart';
+import '../chuoi_van_ban.dart';
 
 class ManHinhThongTinNhom extends StatelessWidget {
   const ManHinhThongTinNhom({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final lang = context.watch<QuanLyNgonNgu>().ngonNgu;
+    final strings = chuoiVanBan[lang]!;
+
     return Scaffold(
       extendBodyBehindAppBar: true, 
       appBar: AppBar(
-        title: const Text('Thông tin nhóm', style: TextStyle(color: Colors.white)),
+        title: Text(strings['thongTinNhom']!, style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -28,27 +34,28 @@ class ManHinhThongTinNhom extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Nhóm 8 - LTTBDD N03',
-                  style: TextStyle(
+                Text(
+                  strings['tenNhom']!,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 30),
-                const Text(
-                  'Thành viên:',
-                  style: TextStyle(
+                Text(
+                  strings['thanhVien']!,
+                  style: const TextStyle(
                     color: Color(0xFF80FF80),
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildMemberItem('23010536', 'Phạm Văn Giang', 'assets/images/giang.jpg'),
+                _buildMemberItem('23010536', 'Phạm Văn Giang', 'assets/images/giang.jpg', strings['mssv']!),
                 const SizedBox(height: 12),
-                _buildMemberItem('23010052', 'Nguyễn Hữu Tình', 'assets/images/tinh.jpg'),
+                _buildMemberItem('23010052', 'Nguyễn Hữu Tình', 'assets/images/tinh.jpg', strings['mssv']!),
+
               ],
             ),
           ),
@@ -57,7 +64,7 @@ class ManHinhThongTinNhom extends StatelessWidget {
     );
   }
 
-  Widget _buildMemberItem(String id, String name, String imagePath) {
+  Widget _buildMemberItem(String id, String name, String imagePath, String mssvLabel) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
@@ -87,7 +94,7 @@ class ManHinhThongTinNhom extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'MSSV: $id',
+                  '$mssvLabel: $id',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 14,
