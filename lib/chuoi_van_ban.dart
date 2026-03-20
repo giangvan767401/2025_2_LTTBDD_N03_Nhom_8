@@ -1,6 +1,5 @@
 const Map<String, Map<String, String>> chuoiVanBan = {
   'vi': {
-    // Màn hình đồng hồ
     'batDau': 'Bắt đầu',
     'tamDung': 'Tạm dừng',
     'datLai': 'Đặt lại',
@@ -15,7 +14,6 @@ const Map<String, Map<String, String>> chuoiVanBan = {
     'xacNhan': 'Xác nhận',
     'cay': 'Cây',
 
-    // Màn hình thống kê
     'thongKe': 'Thống kê',
     'homNay': 'Hôm nay',
     'phien': 'phiên',
@@ -24,7 +22,6 @@ const Map<String, Map<String, String>> chuoiVanBan = {
     'phutDonVi': 'phút',
     'chucMung': 'Chúc mừng bạn đã tập trung!',
 
-    // Màn hình cài đặt
     'caiDat': 'Cài đặt Pomodoro',
     'cauHinhThoiGian': 'Cấu hình thời gian (Phút)',
     'thoiGianTapTrung': 'Thời gian tập trung',
@@ -38,7 +35,6 @@ const Map<String, Map<String, String>> chuoiVanBan = {
     'tiengViet': 'Tiếng Việt',
     'tiengAnh': 'English',
 
-    // Màn hình bộ sưu tập cây
     'cuaHangCay': 'Cửa hàng cây',
     'tongThoiGian': 'Tổng thời gian',
     'chuaMoKhoa': 'Cây này chưa được mở khóa!',
@@ -46,14 +42,12 @@ const Map<String, Map<String, String>> chuoiVanBan = {
     'daMoKhoa': 'Đã mở khóa',
     'dangDung': 'Đang dùng',
 
-    // Màn hình thông tin nhóm
     'thongTinNhom': 'Thông tin nhóm',
     'tenNhom': 'Nhóm 8 - LTTBDD N03',
     'thanhVien': 'Thành viên:',
     'mssv': 'MSSV',
   },
   'en': {
-    // Clock screen
     'batDau': 'Start',
     'tamDung': 'Pause',
     'datLai': 'Reset',
@@ -68,7 +62,6 @@ const Map<String, Map<String, String>> chuoiVanBan = {
     'xacNhan': 'Confirm',
     'cay': 'Tree',
 
-    // Statistics screen
     'thongKe': 'Statistics',
     'homNay': 'Today',
     'phien': 'session(s)',
@@ -77,7 +70,6 @@ const Map<String, Map<String, String>> chuoiVanBan = {
     'phutDonVi': 'min',
     'chucMung': 'Great job focusing!',
 
-    // Settings screen
     'caiDat': 'Pomodoro Settings',
     'cauHinhThoiGian': 'Time Configuration (Minutes)',
     'thoiGianTapTrung': 'Focus duration',
@@ -91,7 +83,6 @@ const Map<String, Map<String, String>> chuoiVanBan = {
     'tiengViet': 'Tiếng Việt',
     'tiengAnh': 'English',
 
-    // Tree collection screen
     'cuaHangCay': 'Tree Collection',
     'tongThoiGian': 'Total time',
     'chuaMoKhoa': 'This tree is not unlocked yet!',
@@ -99,7 +90,6 @@ const Map<String, Map<String, String>> chuoiVanBan = {
     'daMoKhoa': 'Unlocked',
     'dangDung': 'In use',
 
-    // Group info screen
     'thongTinNhom': 'Group Info',
     'tenNhom': 'Group 8 - LTTBDD N03',
     'thanhVien': 'Members:',

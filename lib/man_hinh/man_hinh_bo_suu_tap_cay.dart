@@ -44,7 +44,7 @@ class _ManHinhBoSuuTapCayState extends State<ManHinhBoSuuTapCay> {
     // Tree names localization
     final List<Map<String, dynamic>> localizedTrees = [
       {'anh': 'assets/images/tree1.jpg', 'phutCanDat': 0, 'ten': lang == 'vi' ? 'Cây mầm' : 'Sprout'},
-      {'anh': 'assets/images/tree2.jpg', 'phutCanDat': 25, 'ten': lang == 'vi' ? 'Cây xanh' : 'Green Tree'},
+      {'anh': 'assets/images/tree2.jpg', 'phutCanDat': 5, 'ten': lang == 'vi' ? 'Cây xanh' : 'Green Tree'},
       {'anh': 'assets/images/tree3.jpg', 'phutCanDat': 60, 'ten': lang == 'vi' ? 'Cây vươn' : 'Reach Tree'},
       {'anh': 'assets/images/tree4.jpg', 'phutCanDat': 120, 'ten': lang == 'vi' ? 'Cây lớn' : 'Big Tree'},
       {'anh': 'assets/images/tree5.jpg', 'phutCanDat': 240, 'ten': lang == 'vi' ? 'Cây cổ thụ' : 'Ancient Tree'},

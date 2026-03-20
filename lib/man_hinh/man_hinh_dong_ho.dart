@@ -395,9 +395,7 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> with WidgetsBindingObserv
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: _moHopThoaiNhapThoiGian,
-                      child: SizedBox(
+                    SizedBox(
                         width: 260,
                         height: 260,
                         child: Stack(
@@ -438,18 +436,20 @@ class _ManHinhDongHoState extends State<ManHinhDongHo> with WidgetsBindingObserv
                             ),
                           ],
                         ),
-                      ),
                     ),
 
                     const SizedBox(height: 40),
 
-                    Text(
-                      layChuoiThoiGian(),
-                      style: const TextStyle(
-                        fontSize: 72,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 2,
+                    GestureDetector(
+                      onTap: _moHopThoaiNhapThoiGian,
+                      child: Text(
+                        layChuoiThoiGian(),
+                        style: const TextStyle(
+                          fontSize: 72,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 2,
+                        ),
                       ),
                     ),
 
